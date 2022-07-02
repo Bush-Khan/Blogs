@@ -125,8 +125,8 @@ const deleteBlog = async function (req, res) {
 }
 
 //<!----------------------Delete Blog using filters----------------->
-const deleteBlogDoc = async function (req, res) {
-  try {
+const deleteBlogDoc = async function (req, res) 
+  {try {
  
     var currentDate = moment().toString();
     let doc = req.query
@@ -166,12 +166,12 @@ const deleteBlogDoc = async function (req, res) {
     if(!blog){return res.status(400).send({status:false,msg:"No blog related to this sub-category"})}
     }
     
-    let blog = await blogModel.findOneAndUpdate( {doc,isPublished:false},{ $set: { isDeleted: true,deletedAt:currentDate } })
-
+    let blog = await blogModel.updateMany( (doc),{ $set: { isDeleted: true,deletedAt:currentDate } },{ new: true })
+   
     if (!blog || blog.length == 0) {
       return res.status(404).send({ status: false, msg: "No such blog" })
     }
-    res.status(200).send({ status: true, data: blog })
+    res.status(200).send({ status: true, data: blog})
 
   }
   catch (err) {
@@ -179,6 +179,7 @@ const deleteBlogDoc = async function (req, res) {
   }
 
 }
+  
 
 module.exports.deleteBlogDoc = deleteBlogDoc
 module.exports.deleteBlog = deleteBlog

@@ -14,7 +14,7 @@ const createAuthor = async function (req, res) {
         let data = req.body
         let { fName, lName, title, email, password } = data;
 
-        if (!keyValid(data.fName)) return res.status(400).send({ status: false, message: "Please enter first name" })
+        if (!keyValid(fName)) return res.status(400).send({ status: false, message: "Please enter first name" })
         //<!----------------First name Regex-------------------------->
         fName = /^[a-zA-Z.]{2,15}$/.test(data.fName)
         if (!fName) {
@@ -22,14 +22,14 @@ const createAuthor = async function (req, res) {
         }
 
         //<!-----------------Last name Regex------------------------->        
-        if (!keyValid(data.lName)) return res.status(400).send({ status: false, message: "Please enter last name" })
+        if (!keyValid(lName)) return res.status(400).send({ status: false, message: "Please enter last name" })
         lName = /^[A-Za-z]{2,20}$/.test(data.lName)
         if (!lName) {
             res.status(400).send({ msg: "Please enter alphabets only for last name and maximum length should be 20" })
         }
 
         //<!---------------Email Regex------------------------------>
-        if (!keyValid(data.email)) return res.status(400).send({ status: false, message: "Please enter emailid" })
+        if (!keyValid(email)) return res.status(400).send({ status: false, message: "Please enter emailid" })
         email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(data.email)
 
         let duplicate = await authorModel.findOne({ email: data.email })
