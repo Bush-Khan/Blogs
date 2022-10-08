@@ -10,7 +10,7 @@ const authenticate = async function (req, res, next) {
         if (!token) return res.status(401).send({ status: false, msg: "Token must be present" });
         console.log(token);
 
-        let decodedToken = jwt.verify(token, "functionup-radon");
+        let decodedToken = jwt.verify(token, "Bushra Khan");
         if (!decodedToken)
             return res.status(401).send({ status: false, msg: "Token invalid" })
         next()
