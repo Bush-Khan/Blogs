@@ -8,7 +8,6 @@ let keyValid = function (value) {
   return true
 }
 
-
 //<!--------------Create API------------------------------------>   
 
 const createBlog = async function (req, res) {
@@ -28,7 +27,7 @@ const createBlog = async function (req, res) {
 
     //<!---------------------author Id validation -------------------->
     if (!data.authorId) { return res.status(400).send({ status: false, message: " AuthorId is a mandatory field" }) }
-    let id = data.authorId 
+    let id = data.authorId
     let author = await authorModel.findById(id)
     if (!author) { res.status(400).send({ status: false, msg: "author doesn't exist" }) }
 
@@ -70,8 +69,8 @@ const getBlog = async function (req, res) {
     }
 
     // let blogs = await blogModel.find({isDeleted:false,isPublished:true})
-     let Blog =  await blogModel.find(doc)
-      Blog.filter(x=>x.isDeleted===false && x.isPublished===true)
+    let Blog = await blogModel.find(doc)
+    Blog.filter(x => x.isDeleted === false && x.isPublished === true)
     if (!Blog || Blog.length == 0) { res.status(400).send({ status: false, msg: "No such blog exist" }) }
 
     return res.status(200).send({ data: Blog })
@@ -92,10 +91,7 @@ const updateBlog = async function (req, res) {
       {
         $push: { tag: tag, subcategory: subcategory },
         $set: {
-          title,
-          body,
-          isPublished: true,
-          publishedAt: Date.now(),
+          title, body, isPublished: true, publishedAt: Date.now(),
         },
       },
       { new: true }
@@ -115,7 +111,7 @@ const deleteBlog = async function (req, res) {
     if (!blog) {
       return res.status(404).send({ status: false, msg: "There is no such" })
     }
-    let deletedBlog = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true, deletedAt: currentDate } }, { new: true })
+    await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true, deletedAt: currentDate } }, { new: true })
     if (!deleteBlog) { return res.status(404).send({ msg: "Already deleted" }) }
     res.status(200).send({ msg: "Deleted" })
   }
@@ -125,9 +121,9 @@ const deleteBlog = async function (req, res) {
 }
 
 //<!----------------------Delete Blog using filters----------------->
-const deleteBlogDoc = async function (req, res) 
-  {try {
- 
+const deleteBlogDoc = async function (req, res) {
+  try {
+
     var currentDate = moment().toString();
     let doc = req.query
 
@@ -140,38 +136,38 @@ const deleteBlogDoc = async function (req, res)
     let decodedToken = jwt.verify(token, "functionup-radon");
 
     if (!decodedToken)
-        return res.status(401).send({ status: false, msg: "Token invalid" })
+      return res.status(401).send({ status: false, msg: "Token invalid" })
     let authorId = req.query.authorId
- let userId = decodedToken.userId
+    let userId = decodedToken.userId
     if (authorId != userId) { res.status(403).send({ status: false, msg: "Sorry, you are not authorised to do it" }) }
 
-    if(doc.authorId){
+    if (doc.authorId) {
       let id = doc.authorId
-      let author = await authorModel.findById(id) 
-    if(!author){return res.status(400).send({status:false,msg:"No such Author"})}
+      let author = await authorModel.findById(id)
+      if (!author) { return res.status(400).send({ status: false, msg: "No such Author" }) }
     }
-    if(doc.tag){
+    if (doc.tag) {
       const tag = doc.tag
-      const blog = await blogModel.find({tag:tag}) 
-    if(!blog){return res.status(400).send({status:false,msg:"No blog related to this tag"})}
+      const blog = await blogModel.find({ tag: tag })
+      if (!blog) { return res.status(400).send({ status: false, msg: "No blog related to this tag" }) }
     }
-    if(doc.category){
+    if (doc.category) {
       const category = doc.category
-      const blog = await blogModel.find({category:category}) 
-    if(!blog){return res.status(400).send({status:false,msg:"No blog related to this category"})}
+      const blog = await blogModel.find({ category: category })
+      if (!blog) { return res.status(400).send({ status: false, msg: "No blog related to this category" }) }
     }
-    if(doc.subCategory){
+    if (doc.subCategory) {
       const subcategory = doc.subCategory
-      const blog = await blogModel.find({subcategory:subcategory}) 
-    if(!blog){return res.status(400).send({status:false,msg:"No blog related to this sub-category"})}
+      const blog = await blogModel.find({ subcategory: subcategory })
+      if (!blog) { return res.status(400).send({ status: false, msg: "No blog related to this sub-category" }) }
     }
-    
-    let blog = await blogModel.updateMany( (doc),{ $set: { isDeleted: true,deletedAt:currentDate } },{ new: true })
-   
+
+    let blog = await blogModel.updateMany((doc), { $set: { isDeleted: true, deletedAt: currentDate } }, { new: true })
+
     if (!blog || blog.length == 0) {
       return res.status(404).send({ status: false, msg: "No such blog" })
     }
-    res.status(200).send({ status: true, data: blog})
+    res.status(200).send({ status: true, data: "deleted" })
 
   }
   catch (err) {
@@ -179,7 +175,7 @@ const deleteBlogDoc = async function (req, res)
   }
 
 }
-  
+
 
 module.exports.deleteBlogDoc = deleteBlogDoc
 module.exports.deleteBlog = deleteBlog

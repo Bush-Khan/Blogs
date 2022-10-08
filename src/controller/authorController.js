@@ -1,18 +1,15 @@
 const jwt = require("jsonwebtoken")
 const authorModel = require("../model/authorModel.js")
-const blogModel = require("../model/blogModel.js")
 
 let keyValid = function (value) {
     if (typeof (value) == "undefined" || typeof (value) == null || value.length == 0) { return false }
     return true
 }
-
 //<!-------------------Create Author API----------------------------->
 const createAuthor = async function (req, res) {
     try {
-
         let data = req.body
-        let { fName, lName, title, email, password } = data;
+        let { fName, lName, email, password } = data;
 
         if (!keyValid(fName)) return res.status(400).send({ status: false, message: "Please enter first name" })
         //<!----------------First name Regex-------------------------->
@@ -35,7 +32,7 @@ const createAuthor = async function (req, res) {
         let duplicate = await authorModel.findOne({ email: data.email })
         if (duplicate) return res.status(400).send({ status: false, msg: "Email Already Exist." })
 
-
+  
         if (!email) {
             res.status(400).send({ status: false, messege: "invalid email" })
         }
