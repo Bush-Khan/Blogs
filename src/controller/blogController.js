@@ -29,7 +29,7 @@ const createBlog = async function (req, res) {
     if (!data.authorId) { return res.status(400).send({ status: false, message: " AuthorId is a mandatory field" }) }
     let id = data.authorId
     let author = await authorModel.findById(id)
-    if (!author) return  res.status(400).send({ status: false, msg: "author doesn't exist" }) 
+    if (!author) return res.status(400).send({ status: false, msg: "author doesn't exist" })
 
     //<!-----------------Category validation--------------------------------->
 
@@ -71,7 +71,7 @@ const getBlog = async function (req, res) {
     // let blogs = await blogModel.find({isDeleted:false,isPublished:true})
     let Blog = await blogModel.find(doc)
     Blog.filter(x => x.isDeleted === false && x.isPublished === true)
-    if (!Blog || Blog.length == 0) {return res.status(400).send({ status: false, msg: "No such blog exist" }) }
+    if (!Blog || Blog.length == 0) { return res.status(400).send({ status: false, msg: "No such blog exist" }) }
 
     return res.status(200).send({ data: Blog })
   }
@@ -90,7 +90,7 @@ const updateBlog = async function (req, res) {
       { _id: blogId },
       {
         $push: { tag: tag, subcategory: subcategory },
-        $set: { title, body, isPublished: true, publishedAt: Date.now()},
+        $set: { title, body, isPublished: true, publishedAt: Date.now() },
       },
       { new: true }
     );
@@ -137,7 +137,7 @@ const deleteBlogDoc = async function (req, res) {
       return res.status(401).send({ status: false, msg: "Token invalid" })
     let authorId = req.query.authorId
     let userId = decodedToken.userId
-    if (authorId != userId) {return res.status(403).send({ status: false, msg: "Sorry, you are not authorised to do it" }) }
+    if (authorId != userId) { return res.status(403).send({ status: false, msg: "Sorry, you are not authorised to do it" }) }
 
     if (doc.authorId) {
       let id = doc.authorId
@@ -161,7 +161,6 @@ const deleteBlogDoc = async function (req, res) {
     }
 
     let blog = await blogModel.updateMany((doc), { $set: { isDeleted: true, deletedAt: currentDate } }, { new: true })
-
     if (!blog || blog.length == 0) {
       return res.status(404).send({ status: false, msg: "No such blog" })
     }
