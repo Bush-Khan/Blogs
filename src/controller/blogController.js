@@ -2,7 +2,7 @@ const authorModel = require("../model/authorModel")
 const blogModel = require("../model/blogModel")
 const moment = require('moment');
 const jwt = require("jsonwebtoken");
-const { set } = require("mongoose");
+
 let keyValid = function (value) {
   if (typeof (value) == "undefined" || typeof (value) == null || value.length == 0) { return false }
   return true
@@ -86,11 +86,9 @@ const updateBlog = async function (req, res) {
     const blogId = req.params.blogId;
 
     const { title, body, tag, subcategory } = req.body;
-    const blog = await blogModel.findOneAndUpdate(
-      { _id: blogId },
-      {
-        $push: { tag: tag, subcategory: subcategory },
-        $set: { title, body, isPublished: true, publishedAt: Date.now() },
+    const blog = await blogModel.findOneAndUpdate({ _id: blogId },
+      {$push: { tag: tag, subcategory: subcategory },
+       $set: { title, body, isPublished: true, publishedAt: Date.now() },
       },
       { new: true }
     );
